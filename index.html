@@ -1,0 +1,309 @@
+<html>
+  <head>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>i5ting_ztree_toc:node-js笔记</title>
+		<link href="toc/style/github-bf51422f4bb36427d391e4b75a1daa083c2d840e.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/style/github2-d731afd4f624c99a4b19ad69f3083cd6d02b81d5.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/css/zTreeStyle/zTreeStyle.css" media="all" rel="stylesheet" type="text/css"/>
+      <link rel="stylesheet" href="./toc/src/github-markdown.css">
+      <link rel="stylesheet" href="./toc/src/highlight/styles/atom-one-dark.css">
+      <script src="./toc/src/highlight/highlight.pack.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script>
+	  <style>
+		pre {
+		    counter-reset: line-numbering;
+		    border: solid 1px #d9d9d9;
+		    border-radius: 0;
+		    background: #fff;
+		    padding: 0;
+		    line-height: 23px;
+		    margin-bottom: 30px;
+		    white-space: pre;
+		    overflow-x: auto;
+		    word-break: inherit;
+		    word-wrap: inherit;
+		}
+
+		pre a::before {
+		  content: counter(line-numbering);
+		  counter-increment: line-numbering;
+		  padding-right: 1em; /* space after numbers */
+		  width: 25px;
+		  text-align: right;
+		  opacity: 0.7;
+		  display: inline-block;
+		  color: #aaa;
+		  background: #eee;
+		  margin-right: 16px;
+		  padding: 2px 10px;
+		  font-size: 13px;
+		  -webkit-touch-callout: none;
+		  -webkit-user-select: none;
+		  -khtml-user-select: none;
+		  -moz-user-select: none;
+		  -ms-user-select: none;
+		  user-select: none;
+		}
+
+		pre a:first-of-type::before {
+		  padding-top: 10px;
+		}
+
+		pre a:last-of-type::before {
+		  padding-bottom: 10px;
+		}
+
+		pre a:only-of-type::before {
+		  padding: 10px;
+		}
+
+		.highlight { background-color: #ffffcc } /* RIGHT */
+		</style>
+  </head>
+  <body>
+	  <div>
+				<div style='width:25%;'>
+						<ul id="tree" class="ztree" style='width:100%'>
+
+						</ul>
+				</div>
+        <div id='readme' style='width:70%;margin-left:20%;'>
+          	<article class='markdown-body'>
+            	<h2 id="-flags">文件操作flags</h2>
+<pre><code>- r   以读的形式打开文件，文件不存在就抛异常
+- r+  以读和写的形式打开文件，文件不存在就抛异常
+- rs+ 以同步的读和写形式打开文件，通知操作系统忽略系统缓存(不推荐使用)
+- w   以写的形式打开文件，如果文件不存在就创建，存在就覆盖
+- wx  与w形式类似，只不过文件存在时操作会失败
+- w+  以读和写的形式打开文件，如果文件不存在就创建，存在就覆盖
+- a   以追加的形式打开文件，如果文件不存在就创建
+- ax  与a类似，如果文件存在操作会失败
+- a+  以读和写的形式打开文件，如果文件不存在就创建
+- ax+ 与a+类似，如果文件存在操作会失败
+</code></pre><h2 id="buffer-">buffer 字符串操作对象</h2>
+<pre><code>-通过new的方式产生实例
+- let buf = new Buffer(5);
+- let buf = new Buffer(&#39;abc&#39;);//&lt;Buffer 61 62 63&gt;  97 98 99
+- let buf = new Buffer([1,2,3]);
+- let buf1 = new Buffer(buf);
+&gt;推荐用静态方法产生实例 let buf = Buffer.from(&#39;abc&#39;);
+-常用的方法
+    &gt;console.log(Buffer.isBuffer(buf));//判断参数中的数据是否为Buffer实例
+    &gt;let ret = Buffer.byteLength(str,&#39;ascii&#39;);//统计特定编码下字符串对应的字节数
+    &gt;console.log(Buffer.isEncoding(&#39;base64&#39;));//判断Buffer是否支持该编码
+    &gt; const buf = Buffer.from(&#39;this is a buffer&#39;);
+     &gt;console.log(buf.indexOf(&#39;buffer&#39;));//检索特定字符串在整个Buffer中的位置
+    &gt; let buf1 = Buffer.from(&#39;abc&#39;);
+     &gt; let buf2 = Buffer.from(&#39;abcd&#39;);
+     &gt; console.log(buf1.equals(buf2));//判断两个Buffer实例是否相等
+</code></pre><h2 id="buffer-write-">buffer.write写入文件操作</h2>
+<pre><code>-buf.write(string[, offset[, length]][, encoding])
+-参数一：要写入buf的字符串
+-参数二：开始写的位置
+-参数三：写入的长度
+-参数四：编码形式
+</code></pre><h2 id="path-">path 截取文件名，路径名</h2>
+<pre><code>- format把对象形式的路径转化为字符串形式
+- let str = path.format(obj);
+- console.log(str);//  /home/user/dir\file.txt
+- -----------------------------------------
+- normalize标准化路径
+- let str = path.normalize(&#39;C:\\temp\\\\foo\\bar\\..\\&#39;);
+- console.log(str);// C:\temp\foo\
+- ------------------------------------------
+- join用来拼接路径
+- let str = path.join(&#39;/foo&#39;, &#39;bar&#39;, &#39;baz/asdf&#39;, &#39;quux&#39;, &#39;..&#39;);
+- let str = path.join(__dirname,&#39;./README.md&#39;);//C:\Users\www\Desktop\Nodejs\代码\nodejs\day03\README.md
+- console.log(str);// \foo\bar\baz\asdf
+- -------------------------------------------
+- 计算相对路径
+- let str = path.relative(&#39;/data/orandea/test/aaa&#39;, &#39;/data/orandea/impl/bbb&#39;);
+- console.log(str);// ..\..\impl\bbb
+- -------------------------------------------
+- 解析绝对路径
+- let str = path.resolve(&#39;/foo/bar&#39;, &#39;/tmp/file/&#39;);
+- console.log(str);//C:\tmp\file
+</code></pre><h2 id="fs-stat-fs-statsync-">fs.stat 查看文件的状态信息（异步操作）   fs.statSync（同步操作）</h2>
+<pre><code>&gt;fs.stat(path.join(__dirname,&#39;./abc&#39;),(err,stats)=&gt;{
+     console.log(err);
+     console.log(stats);
+     console.log(&#39;atime:访问时间&#39; + stats.atime);
+     console.log(&#39;mtime:内容修改时间&#39; + stats.mtime);
+     console.log(&#39;ctime:文件状态修改时间&#39; + stats.ctime);
+     console.log(&#39;btime:创建时间&#39; + stats.birthtime);
+     console.log(stats.isFile());//判断是否为文件
+     console.log(stats.isDirectory());//判断是否为路径
+     console.log(2);
+ });
+ console.log(3);
+</code></pre><h2 id="fs-open-">fs.open打开文件</h2>
+<pre><code>&gt;   文件操作
+     fs.open(path, flags[, mode], callback)
+     path  文件的路径
+     flags  打开文件的方式
+     mode  Linux平台有效，可以控制文件的读、写、可执行 777，参数是可选的
+     callback 回调函数（err,fd）
+ fs.open(path.join(__dirname,&#39;./data.txt&#39;),&#39;r&#39;,(err,fd) =&gt; {
+      // fd file discriptor 文件描述符，通过fd可以操作文件，默认从3开始，打开多次接着累加
+      if(err){
+          console.log(err);
+          return;
+      }
+      console.log(err,fd);
+  });
+</code></pre><h2 id="fs-read-">fs.read 文件读操作</h2>
+<pre><code>文件读操作
+    -fs.read(fd, buffer, offset, length, position, callback)
+    -fd 文件描述符
+    -buffer 读取的数据放到buffer中
+    -offset 读取的数据从buffer的第几个位置开始写
+    -length 读取文件中数据的字节数量
+    -position 从文件的什么位置开始读
+    -callback 回调函数（err,bytes,buffer）
+    fs.open(path.join(__dirname,&#39;./data.txt&#39;),&#39;r&#39;,(err,fd) =&gt; {
+         let buf = Buffer.alloc(5);
+         fs.read(fd,buf,1,3,null,(err,bytes,buffer) =&gt; {
+             console.log(err,bytes,buffer);//bytes表示读取的字节数量
+             console.log(buf);//读取的文件内容
+             console.log(buf == buffer);//buffer和read参数中的buf是同一份数据
+         });
+     });
+</code></pre><h2 id="fs-write-">fs.write 文件写操作</h2>
+<pre><code>&gt; 文件写操作(浏览器中的js和Node.js中的js语法上都不支持方法重载，但是可以在定义函数时，根据参数的个数，和函数的类型进行判断，从而根据实参形式上的差别来区分实际的调用形式)
+     fs.write(fd, buffer, offset, length[, position], callback)
+     fs.writeSync(fd, buffer, offset, length[, position])
+
+     fs.write(fd, data[, position[, encoding]], callback)
+     fs.writeSync(fd, data[, position[, encoding]])
+// 方法重载（方法名称相同，但是参数的个数不同，参数的类型不同）
+ fs.open(path.join(__dirname, &#39;./data.txt&#39;), &#39;w&#39;, (err, fd) =&gt; {
+     let buf = Buffer.from(&#39;中国&#39;);
+     // written指的是字节数量，而不是字符数量
+     fs.write(fd,buf,0,6,(err,written,buffer) =&gt; {
+         console.log(err,written,buffer);
+         console.log(buf === buffer);
+     });
+ });
+</code></pre><h2 id="fs-readfile-">fs.readFile 文件读操作</h2>
+<pre><code>   &gt; fs.readFile(file[, options], callback)
+        file 表示文件名称或者文件描述符
+        options 可以是字符串形式，表示编码；可以是对象形式（encoding,flag）
+        callback 回调函数（err,data 实际读取的数据）
+        fs.readFileSync(file[, options])
+
+   第二个参数指定编码，回调函数中的data是字符串，不指定的是Buffer
+    fs.readFile(path.join(__dirname,&#39;./data.txt&#39;),(err,data)=&gt;{
+        console.log(data.toString());
+    });
+
+    fs.readFile(path.join(__dirname,&#39;./data.txt&#39;),&#39;utf8&#39;,(err,data)=&gt;{
+        console.log(data);
+    });
+</code></pre><h2 id="fs-writefile-">fs.writeFile文件写操作</h2>
+<pre><code>&gt;fs.writeFile(file, data[, options], callback)
+     data 写入的数据
+     fs.writeFileSync(file, data[, options])
+     fs.writeFile(path.join(__dirname,&#39;./data.txt&#39;),&#39;hi&#39;,(err)=&gt;{
+          console.log(err);
+      });
+</code></pre><h2 id="fs-appendfile-">fs.appendFile 追加文件内容</h2>
+<pre><code>&gt;fs.appendFile(file, data[, options], callback)
+     fs.appendFileSync(file, data[, options])
+     fs.appendFile(path.join(__dirname,&#39;./data.txt&#39;),&#39;程序员&#39;,(err)=&gt;{
+          console.log(err);
+      });
+</code></pre><h2 id="fs-unlink-path-callback-">fs.unlink(path, callback)删除文件</h2>
+<pre><code>&gt;fs.unlink(path.join(__dirname,&#39;./data.txt&#39;),(err) =&gt; {
+     console.log(err);
+ });
+</code></pre><h2 id="fs-">fs文件目录操作</h2>
+<pre><code> -fs.mkdir(path[, mode], callback) 创建目录
+ -fs.mkdirSync(path[, mode])
+
+ -fs.readdir(path[, options], callback) 读取目录
+ -fs.readdirSync(path[, options])
+
+ -fs.rmdir(path, callback) 删除目录
+ -fs.rmdirSync(path)
+
+ &gt;fs.mkdir(path.join(__dirname,&#39;./hello&#39;),(err)=&gt;{
+       console.log(err);
+   })
+
+   fs.mkdirSync(path.join(__dirname,&#39;./hi&#39;));
+
+   fs.readdir(__dirname,(err,files) =&gt; {
+       files.forEach((e) =&gt; {
+           fs.stat(path.join(__dirname,e),(err,stats) =&gt; {
+               if(stats.isFile()){
+                   console.log(`${e}是文件`);
+               }else if(stats.isDirectory()){
+                   console.log(`${e}是目录`);
+               }
+           });
+       });
+   });
+
+   let files = fs.readdirSync(__dirname);
+   files.forEach((e) =&gt; {
+       fs.stat(path.join(__dirname,e),(err,stats) =&gt; {
+           if(stats.isFile()){
+               console.log(`${e}是文件`);
+           }else if(stats.isDirectory()){
+               console.log(`${e}是目录`);
+           }
+       });
+   });
+
+   fs.rmdir(path.join(__dirname,&#39;hello&#39;),(err) =&gt; {
+       console.log(err);
+   });
+</code></pre><h2 id="fs-watchfile-">fs.watchFile文件监控</h2>
+<pre><code>    &gt;fs.watchFile(filename[, options], listener)
+         filename 监控的文件名称
+         options(persistent=true,interval=5007 每隔多长时间检测一下文件的状态)
+         listener 事件函数(curr表示当前文件的状态，prev之前文件的状态)
+         阻止监听特定的文件
+         fs.unwatchFile(filename[, listener])
+         watchFile与unwatchFile的用法与浏览器中绑定事件与解绑事件
+         addEventListener与removeEventListener的用法类似
+         fs.watch(filename[, options][, listener])
+</code></pre><p>##nodejs大型文件的流式操作</p>
+<pre><code>&gt;流式操作是指，因为文件过大一次打开内存不够，所以把大型文件分解成一股股数据流来进行处理。
+    -readFile读取文件会一次性把文件加载到内存，会导致内存暴涨；这是不合理的；
+    大文件操作（readFIle读取文件的时候，会把所有的文件数据加载到内存）
+
+        文件的流式操作
+        fs.createReadStream(path[, options])
+        fs.createWriteStream(path[, options])
+
+        readStream.on(&#39;data&#39;,(chunk) =&gt; {
+            num += 1;
+            writeStream.write(chunk);
+        });
+
+        readStream.on(&#39;end&#39;,() =&gt; {
+            console.log(&#39;处理完成&#39;+num);
+        });
+</code></pre>
+          	</article>
+        </div>
+		</div>
+  </body>
+</html>
+<script type="text/javascript" src="toc/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="toc/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="toc/js/ztree_toc.js"></script>
+<script type="text/javascript" src="toc_conf.js"></script>
+
+<SCRIPT type="text/javascript" >
+<!--
+$(document).ready(function(){
+    var css_conf = eval(markdown_panel_style);
+    $('#readme').css(css_conf)
+    
+    var conf = eval(jquery_ztree_toc_opts);
+		$('#tree').ztree_toc(conf);
+});
+//-->
+</SCRIPT>
